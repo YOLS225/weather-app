@@ -1,5 +1,5 @@
-import { AppLayout } from "@/app/core/components/widgets/layout"
-import { SettingsView } from "@/app/features/settings"
+import { AppLayout } from "@/core/components/widgets/layout"
+import { SettingsView } from "@/features/settings"
 
 export default function SettingsPage() {
   return (

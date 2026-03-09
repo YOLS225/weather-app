@@ -1,5 +1,5 @@
-import { AppLayout } from "@/app/core/components/widgets/layout"
-import { MapView } from "@/app/features/map"
+import { AppLayout } from "@/core/components/widgets/layout"
+import { MapView } from "@/features/map"
 
 export default function MapPage() {
   return (

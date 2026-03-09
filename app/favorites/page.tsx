@@ -1,5 +1,5 @@
-import { AppLayout } from "@/app/core/components/widgets/layout"
-import { FavoritesView } from "@/app/features/favorites"
+import { AppLayout } from "@/core/components/widgets/layout"
+import { FavoritesView } from "@/features/favorites"
 
 export default function FavoritesPage() {
   return (

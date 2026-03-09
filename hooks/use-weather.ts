@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { fetchWeather, type WeatherData } from "@/app/core/services/weather.service"
-import { useWeatherStore } from "@/app/core/stores/weather.store"
+import { fetchWeather, type WeatherData } from "@/core/services/weather.service"
+import { useWeatherStore } from "@/core/stores/weather.store"
 
 interface UseWeatherResult {
   data: WeatherData | null

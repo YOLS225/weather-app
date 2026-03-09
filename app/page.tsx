@@ -1,5 +1,5 @@
-import { AppLayout } from "@/app/core/components/widgets/layout"
-import { Dashboard } from "@/app/features/dashboard"
+import { AppLayout } from "@/core/components/widgets/layout"
+import { Dashboard } from "@/features/dashboard"
 
 export default function HomePage() {
   return (
