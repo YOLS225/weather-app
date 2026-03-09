@@ -88,7 +88,7 @@ export function DailyForecast({ data }: DailyForecastProps) {
                 {/* Rain */}
                 <div
                   className={cn(
-                    "flex items-center gap-1 text-xs text-sky-500 w-12 shrink-0",
+                    "flex items-center gap-1 text-xs text-primary w-12 shrink-0",
                     rain === 0 && "opacity-0",
                   )}
                 >

@@ -1,14 +1,15 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
-import { Cloud, MapIcon, BarChart2, Star, Settings, Sun, Moon } from "lucide-react"
+import { MapIcon, BarChart2, Star, Settings, Sun, Moon, CloudSun } from "lucide-react"
 import { SearchBar } from "@/core/components/widgets/search-bar"
 import { cn } from "@/lib/utils"
 
 const NAV_LINKS = [
-  { href: "/", label: "Météo", icon: Cloud },
+  { href: "/", label: "Météo", icon: CloudSun },
   { href: "/map", label: "Carte", icon: MapIcon },
   { href: "/charts", label: "Graphiques", icon: BarChart2 },
   { href: "/favorites", label: "Favoris", icon: Star },
@@ -24,8 +25,14 @@ export function Header() {
     <header className="border-b bg-background/80 backdrop-blur-md sticky top-0 z-50">
       <div className="mx-auto max-w-screen-xl px-4 h-16 flex items-center gap-4">
         {/* Logo */}
-        <Link href="/public" className="flex items-center gap-2 font-semibold text-lg shrink-0">
-          <Cloud className="size-5 text-sky-500" />
+        <Link href="/" className="flex items-center gap-2.5 font-semibold text-lg shrink-0">
+          <Image
+            src="/nimbus.png"
+            alt="Nimbus"
+            width={32}
+            height={32}
+            className="rounded-lg"
+          />
           <span className="hidden sm:inline">Nimbus</span>
         </Link>
 

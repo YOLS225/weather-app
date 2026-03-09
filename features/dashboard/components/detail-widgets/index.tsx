@@ -61,7 +61,7 @@ export function DetailWidgets({ data }: DetailWidgetsProps) {
         <p className="text-2xl font-bold">{cur.relative_humidity_2m}%</p>
         <div className="mt-2 h-1.5 rounded-full bg-muted overflow-hidden">
           <div
-            className="h-full rounded-full bg-sky-400 transition-all"
+            className="h-full rounded-full bg-primary transition-all"
             style={{ width: `${cur.relative_humidity_2m}%` }}
           />
         </div>

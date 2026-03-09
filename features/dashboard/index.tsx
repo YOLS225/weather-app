@@ -14,12 +14,11 @@ import { DetailWidgets } from "@/features/dashboard/components/detail-widgets"
 export function Dashboard() {
   const { activeCity, setActiveCity } = useWeatherStore()
   const { data, isLoading, error, refetch } = useWeather()
-  const [isGeolocating, setIsGeolocating] = useState(false)
+  const [isGeolocating, setIsGeolocating] = useState(true)
   const [geoError, setGeoError] = useState<string | null>(null)
 
-  // Auto-géoloc au premier chargement si aucune ville n'est sauvegardée
+  // Auto-géoloc à chaque démarrage de l'app
   useEffect(() => {
-    if (activeCity) return
     setIsGeolocating(true)
     setGeoError(null)
 
@@ -36,7 +35,7 @@ export function Dashboard() {
   if (isGeolocating) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center">
-        <Loader2 className="size-10 text-sky-500 animate-spin" />
+        <Loader2 className="size-10 text-primary animate-spin" />
         <p className="text-muted-foreground text-sm">Détection de votre position…</p>
       </div>
     )
@@ -46,8 +45,8 @@ export function Dashboard() {
   if (!activeCity) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-5 text-center">
-        <div className="size-20 rounded-full bg-sky-100 dark:bg-sky-950 flex items-center justify-center">
-          <MapPin className="size-9 text-sky-500" />
+        <div className="size-20 rounded-full bg-primary/10 flex items-center justify-center">
+          <MapPin className="size-9 text-primary" />
         </div>
         <div>
           <h2 className="text-2xl font-semibold">Bienvenue sur Nimbus</h2>
