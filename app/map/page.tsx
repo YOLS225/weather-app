@@ -1,10 +1,10 @@
 import { AppLayout } from "@/app/core/components/widgets/layout"
-import { Dashboard } from "@/app/features/dashboard"
+import { MapView } from "@/app/features/map"
 
-export default function HomePage() {
+export default function MapPage() {
   return (
     <AppLayout>
-      <Dashboard />
+      <MapView />
     </AppLayout>
   )
 }

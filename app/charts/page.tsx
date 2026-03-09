@@ -1,10 +1,10 @@
 import { AppLayout } from "@/app/core/components/widgets/layout"
-import { Dashboard } from "@/app/features/dashboard"
+import { ChartsView } from "@/app/features/charts"
 
-export default function HomePage() {
+export default function ChartsPage() {
   return (
     <AppLayout>
-      <Dashboard />
+      <ChartsView />
     </AppLayout>
   )
 }
