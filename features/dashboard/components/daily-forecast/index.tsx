@@ -6,6 +6,7 @@ import type { WeatherData } from "@/core/services/weather.service"
 import { getWmoInfo } from "@/core/utils/wmo-codes"
 import { round } from "@/core/utils/weather-helpers"
 import { useWeatherStore } from "@/core/stores/weather.store"
+import { WeatherIcon } from "@/core/components/widgets/weather-icon"
 import { HourlyForecast } from "@/features/dashboard/components/hourly-forecast"
 import { cn } from "@/lib/utils"
 
@@ -78,7 +79,7 @@ export function DailyForecast({ data }: DailyForecastProps) {
                 <span className="w-28 shrink-0 text-sm capitalize">{formatDay(dateStr, i)}</span>
 
                 {/* Icon */}
-                <span className="text-xl shrink-0">{wmo.icon}</span>
+                <WeatherIcon severity={wmo.severity} size={28} />
 
                 {/* Description */}
                 <span className="hidden sm:block flex-1 text-sm text-muted-foreground truncate">

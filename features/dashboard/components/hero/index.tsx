@@ -13,6 +13,7 @@ import {
   round,
 } from "@/core/utils/weather-helpers"
 import { useWeatherStore } from "@/core/stores/weather.store"
+import { WeatherIcon } from "@/core/components/widgets/weather-icon"
 import { cn } from "@/lib/utils"
 
 interface HeroProps {
@@ -107,11 +108,8 @@ export function Hero({ data, city, onRefetch }: HeroProps) {
         {/* Main: icon + temperature */}
         <div className="flex items-center gap-6 md:gap-10 mb-8">
           {/* Animated weather icon */}
-          <div
-            className="text-8xl md:text-9xl select-none"
-            style={{ filter: "drop-shadow(0 4px 16px rgba(0,0,0,0.3))" }}
-          >
-            {wmo.icon}
+          <div style={{ filter: "drop-shadow(0 4px 20px rgba(0,0,0,0.25))" }}>
+            <WeatherIcon severity={wmo.severity} isDay={isDay} size={100} />
           </div>
 
           <div>

@@ -5,6 +5,7 @@ import { Droplets } from "lucide-react"
 import type { WeatherData } from "@/core/services/weather.service"
 import { getWmoInfo } from "@/core/utils/wmo-codes"
 import { round } from "@/core/utils/weather-helpers"
+import { WeatherIcon } from "@/core/components/widgets/weather-icon"
 import { useWeatherStore } from "@/core/stores/weather.store"
 import { TempChart } from "./chart"
 import { cn } from "@/lib/utils"
@@ -150,7 +151,7 @@ export function HourlyForecast({ data, dayOffset = 0 }: HourlyForecastProps) {
               >
                 {isCurrent ? "Maintenant" : hour}
               </span>
-              <span className="text-2xl leading-none">{wmo.icon}</span>
+              <WeatherIcon severity={wmo.severity} isDay={hourly.is_day[idx] === 1} size={28} />
               <span className={cn("text-sm font-bold", isCurrent && "text-primary-foreground")}>
                 {temp}°
               </span>

@@ -8,9 +8,10 @@ Application météo web moderne, immersive et premium, construite avec Next.js e
 - **UI** : shadcn/ui + Tailwind CSS v4
 - **State** : Zustand (persisté localStorage)
 - **Charts** : Recharts
-- **Maps** : Leaflet *(à venir)*
+- **Maps** : Leaflet + react-leaflet
 - **API météo** : Open-Meteo (forecast + geocoding)
 - **Reverse geocoding** : Nominatim (OpenStreetMap)
+- **Radar précipitations** : RainViewer (tiles temps réel)
 
 ---
 
@@ -18,7 +19,7 @@ Application météo web moderne, immersive et premium, construite avec Next.js e
 
 Entre la sophistication de *Carrot Weather* et la clarté de *Weather.com*, avec une touche data-visualisation façon *Windy.com*. L'utilisateur doit **ressentir** la météo en regardant l'interface.
 
-**Design** : Palette dynamique selon la météo et le jour/nuit · Typographie XXL pour la température · Responsive desktop/tablet/mobile
+**Design** : Palette dynamique selon la météo et le jour/nuit · Typographie XXL pour la température · Responsive desktop/tablet/mobile · Navigation mobile bottom nav
 
 ---
 
@@ -28,9 +29,11 @@ Entre la sophistication de *Carrot Weather* et la clarté de *Weather.com*, avec
 app/
 ├── core/
 │   ├── components/widgets/
-│   │   ├── layout/        → AppLayout (header + main)
-│   │   ├── header/        → Nav, search, toggle thème
-│   │   └── search-bar/    → Autocomplete + géoloc GPS
+│   │   ├── layout/        → AppLayout (header + main + bottom nav)
+│   │   ├── header/        → Nav, search, toggle thème, logo
+│   │   ├── search-bar/    → Autocomplete + géoloc GPS
+│   │   ├── bottom-nav/    → Navigation mobile fixe (md:hidden)
+│   │   └── weather-icon/  → Icônes SVG animées (Sun/Moon/Cloud/Rain/Storm/Snow/Fog)
 │   ├── services/
 │   │   ├── weather.service.ts     → Open-Meteo forecast API
 │   │   ├── geocoding.service.ts   → Recherche de villes
@@ -44,11 +47,11 @@ app/
 │       └── weather-helpers.ts → Formatters (vent, visibilité, UV…)
 │
 ├── features/
-│   ├── dashboard/    → Page principale ✅
-│   ├── map/          → Carte interactive 🚧
-│   ├── charts/       → Graphiques & analyse 🚧
-│   ├── favorites/    → Multi-villes ✅
-│   └── settings/     → Paramètres ✅
+│   ├── dashboard/    → Page principale
+│   ├── map/          → Carte interactive Leaflet
+│   ├── charts/       → Graphiques & analyse Recharts
+│   ├── favorites/    → Multi-villes
+│   └── settings/     → Paramètres
 │
 hooks/
 ├── use-weather.ts       → Fetch météo ville active
@@ -57,15 +60,15 @@ hooks/
 
 ---
 
-## Fonctionnalités développées ✅
+## Fonctionnalités
 
 ### Dashboard (`/`)
-- **Géolocalisation automatique** au premier chargement (GPS → Nominatim reverse geocode)
-- **Hero immersif** : fond dégradé dynamique selon code WMO + jour/nuit (8 combinaisons), blobs animés
-- **Température XXL** + icône météo WMO + description française + ressenti
+- **Géolocalisation automatique** au chargement (GPS → Nominatim reverse geocode)
+- **Hero immersif** : fond dégradé dynamique selon code WMO + jour/nuit (8 combinaisons), blobs animés, horloge en temps réel
+- **Température XXL** + icône SVG animée + description française + ressenti
 - **4 stats rapides** : humidité · vent + direction cardinale · visibilité · ressenti
-- **Prévisions horaires** : slider 24h/48h, mini graphique Recharts (AreaChart + tooltip + ligne courante), carte "Maintenant" mise en évidence
-- **Prévisions 16 jours** : barre Tmin→Tmax relative (gradient froid→chaud), les 3 premiers jours expandables avec détail horaire
+- **Prévisions horaires** : slider 24h/48h, graphique Recharts (AreaChart + tooltip + ligne courante)
+- **Prévisions 16 jours** : barre Tmin→Tmax relative (gradient froid→chaud), 3 premiers jours expandables avec détail horaire
 - **Widgets détails** (grille 2×3) :
   - Lever/coucher soleil avec arc SVG animé
   - Vent : vitesse + direction + rafales
@@ -74,51 +77,37 @@ hooks/
   - Indice UV max + barre segmentée colorée
   - Visibilité + couverture nuageuse
 
+### Carte interactive (`/map`)
+- Carte plein écran Leaflet (import dynamique SSR disabled)
+- **Radar précipitations** en temps réel via RainViewer
+- Marqueurs des villes favorites avec popup météo
+- **Clic n'importe où** sur la carte → panel latéral avec météo locale (reverse geocoding Nominatim)
+- Panel rétractable avec icône animée, température, stats, min/max du jour
+- Bouton "Voir la météo complète" pour définir comme ville active
+
+### Graphiques & Analyse (`/charts`)
+- **3 graphiques Recharts interactifs** : température (AreaChart), précipitations (BarChart), vitesse du vent (AreaChart)
+- **Sélecteur de période** : 24h / 3j / 7j / 14j
+- **Comparateur de villes** : ajout d'une 2e ville pour superposer les courbes
+
 ### Favoris (`/favorites`)
-- Barre de recherche dédiée pour ajouter des villes
-- Grille de cards avec météo en temps réel par ville (température, icône, Tmin/Tmax, heure locale)
+- Recherche et ajout de villes
+- Cards avec météo en temps réel (température, icône animée, Tmin/Tmax, heure locale)
 - **Drag & drop** HTML5 natif pour réordonner
-- Épingler une ville comme principale (badge + ring)
-- Supprimer une ville
+- Épingler une ville comme principale
 - Bouton ⭐ dans le Hero pour ajouter/retirer la ville active
 
 ### Paramètres (`/settings`)
-- **Thème** : Clair / Sombre / Système (persisté)
-- **Unités** : °C/°F · km/h/mph · hPa/mmHg (appliquées immédiatement)
-- Ville par défaut affichée
-- Supprimer tous les favoris / Réinitialiser les paramètres
+- **Thème** : Clair / Sombre / Système (next-themes)
+- **Unités** : °C/°F · km/h/mph · hPa/mmHg
+- Réinitialisation des favoris et paramètres
 
 ### Global
-- Toggle thème ☀️/🌙 dans le header
-- Recherche de ville avec autocomplétion (debounce 300ms) dans le header
-- États UI : skeleton loading · erreur API (message détaillé) · erreur géoloc · ville vide
-
----
-
-## Reste à faire 🚧
-
-### Carte interactive (`/map`)
-- Carte plein écran Leaflet
-- Layers sélectionnables : précipitations · température · vent · nuages (tiles Open-Meteo)
-- Tooltip météo au clic/survol
-- Panel latéral rétractable avec données de la ville pointée
-- Bouton recentrage position actuelle
-
-### Graphiques & Analyse (`/charts`)
-- Graphiques Recharts interactifs :
-  - Courbe température 7j
-  - Barres précipitations 7j
-  - Area chart vent 7j
-- Sélecteur de période : 24h / 3j / 7j / 14j
-- Comparateur de villes (ajouter une 2e courbe)
-
-### Polish & UX
-- Icônes météo animées (Lottie ou SVG animés) en remplacement des emojis
-- Navigation mobile (bottom nav ou hamburger)
-- Toggle °C/°F rapide dans le header
-- Mode hors ligne (Service Worker / cache)
-- Skeleton sur les widgets détails
-- Animations de transition entre villes
+- Toggle thème dans le header
+- Recherche avec autocomplétion (debounce 300ms)
+- **Navigation mobile** : bottom nav fixe avec safe-area-inset pour iOS
+- **Icônes météo SVG animées** : soleil tournant, lune avec halo, nuages flottants, pluie, orage, neige, brouillard
+- États UI complets : skeleton loading · erreur API · erreur géoloc · ville vide
 
 ---
 
@@ -131,4 +120,4 @@ npm run dev
 
 [http://localhost:3000](http://localhost:3000)
 
-> **Note** : L'app demande la permission de géolocalisation au premier chargement. Si refusée, utilisez la barre de recherche.
+> **Note** : L'app demande la permission de géolocalisation au premier chargement. Si refusée, utilisez la barre de recherche dans le header.

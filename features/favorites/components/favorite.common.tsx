@@ -1,12 +1,14 @@
 "use client"
 
-import { useState } from "react"
-import { GripVertical, Pin, PinOff, Star, Trash2 } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
+import { GripVertical, Loader2, Pin, PinOff, Plus, Search, Star, Trash2 } from "lucide-react"
 import { useCityWeather } from "@/hooks/use-city-weather"
 import { useWeatherStore, type SavedCity } from "@/core/stores/weather.store"
 import { getWmoInfo } from "@/core/utils/wmo-codes"
 import { formatLocalTime, round } from "@/core/utils/weather-helpers"
+import { WeatherIcon } from "@/core/components/widgets/weather-icon"
 import { cn } from "@/lib/utils"
+import  { GeocodingResult, searchCities } from "@/core/services/geocoding.service"
 
 interface CityCardProps {
   city: SavedCity
@@ -90,7 +92,7 @@ export function CityCard({ city, isDragging, dragHandleProps }: CityCardProps) {
                 <span className="text-4xl font-bold leading-none">
                   {round(cur.temperature_2m)}{unitSymbol}
                 </span>
-                <span className="text-3xl mt-0.5">{wmo.icon}</span>
+                <WeatherIcon severity={wmo.severity} isDay={cur.is_day === 1} size={36} />
               </div>
               <p className="text-sm text-muted-foreground mt-1.5">{wmo.labelFr}</p>
             </div>
@@ -129,6 +131,87 @@ export function CityCard({ city, isDragging, dragHandleProps }: CityCardProps) {
           Supprimer
         </button>
       </div>
+    </div>
+  )
+}
+
+
+export function SearchBarAddMode({ onAdd }: { onAdd: (city: GeocodingResult) => void }) {
+  const [query, setQuery] = useState("")
+  const [results, setResults] = useState<GeocodingResult[]>([])
+  const [isOpen, setIsOpen] = useState(false)
+  const [isSearching, setIsSearching] = useState(false)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    if (query.trim().length < 2) { setResults([]); setIsOpen(false); return }
+
+    debounceRef.current = setTimeout(async () => {
+      setIsSearching(true)
+      try {
+        setResults(await searchCities(query))
+        setIsOpen(true)
+      } finally {
+        setIsSearching(false)
+      }
+    }, 300)
+
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
+  }, [query])
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) setIsOpen(false)
+    }
+    document.addEventListener("mousedown", handler)
+    return () => document.removeEventListener("mousedown", handler)
+  }, [])
+
+  function handleSelect(city: GeocodingResult) {
+    onAdd(city)
+    setQuery("")
+    setIsOpen(false)
+    setResults([])
+  }
+
+  return (
+    <div ref={wrapperRef} className="relative">
+      <div className="relative flex items-center">
+        <Search className="absolute left-3 size-4 text-muted-foreground pointer-events-none" />
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Rechercher et ajouter une ville..."
+          className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
+        />
+        {isSearching && (
+          <Loader2 className="absolute right-3 size-4 animate-spin text-muted-foreground" />
+        )}
+      </div>
+
+      {isOpen && (
+        <div className="absolute top-full mt-1 w-full rounded-lg border bg-popover shadow-lg z-50 overflow-hidden">
+          {results.length === 0 && !isSearching && (
+            <div className="px-3 py-2 text-sm text-muted-foreground">Aucun résultat.</div>
+          )}
+          {results.map((city) => (
+            <button
+              key={city.id}
+              onClick={() => handleSelect(city)}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent transition-colors text-left"
+            >
+              <Plus className="size-3.5 shrink-0 text-muted-foreground" />
+              <span className="font-medium">{city.name}</span>
+              <span className="text-muted-foreground text-xs">
+                {city.admin1 ? `${city.admin1}, ` : ""}{city.country}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

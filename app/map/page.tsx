@@ -3,7 +3,7 @@ import { MapView } from "@/features/map"
 
 export default function MapPage() {
   return (
-    <AppLayout>
+    <AppLayout fullscreen>
       <MapView />
     </AppLayout>
   )
